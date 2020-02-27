@@ -15,8 +15,7 @@ for c in range(1072,1104):
 print(test_dict)
 
 # Загружаем города из КЛАДР и заносим их в соотв-щие их первой букве элементы словаря
-cities = []
-with open('rus_cities.txt', 'r', encoding='utf-8') as f_input:
+with open('ru_cities.txt', 'r', encoding='utf-8') as f_input:
     for line in f_input:
         c = line[0].lower()
         test_dict[c].append(line.rstrip('\n'))
