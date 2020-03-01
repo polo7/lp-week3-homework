@@ -8,6 +8,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 # !!! С 13 версии хотят отменить подход pass_* и перейти на context
 
 # TO DO
+# Добавить случайный выбор города из списка, чтобы игра не шла линейно из-за сортированности списков.
 # Добавить таймер для пользователя для ограничения времени ответа, чтобы он мог тоже проиграть
 # Сделать посильней проверки и очистку ввода пользователя или поиск города итак с этим справится?
 # Попробовать сделать Ростов-на-Дону и Ростов на Дону - чтобы прощать пользователю такие описки.
@@ -33,6 +34,7 @@ TOKEN = "1036004253:AAH6OgKQU0xZH7kDUtURSoaJ2Uvpjvvg8Jc"
 #	cities - словарь из загруженных городов
 #	now_playing - True/False - игра начата?
 #	empty_letter - список из букв, на которые не бывает городов (как там бука ё?)
+#	city_char - буква, на которую игроку нужен город
 #	last_city - последний названный город - пока не используется
 # 	last_turn - 'user' / 'bot' - кто сделал последний ход - пока не используется
 # ]
@@ -82,6 +84,7 @@ def pick_city(city_last_char, user_data):
 def init_game(bot, update, user_data):
 	user_data['now_playing'] = True
 	user_data['cities'] = load_cities_dict()
+	user_data['city_char'] = ''
 	tmp_dict = user_data['cities'].copy()
 	for i in range(1040, 1072):
 		if tmp_dict[chr(i)]:
@@ -94,17 +97,16 @@ def stop_game(bot, update, user_data):
 	update.message.reply_text('Игра завершена. Спасибо!')
 
 def play_game(bot, update, user_data):
+	current_city = update.message.text.strip().upper() 
 	# Заменить if внизу на 
 	# if not user_data.get('now_playing', false) ???
 	if not 'now_playing' in user_data.keys() or not user_data['now_playing']:
 		update.message.reply_text('Игра не начата. Начните ее командой /start')
-	else:
+	elif current_city[0] == user_data['city_char'] or user_data['city_char'] == '':
 		# play game
-		current_city = update.message.text.strip().upper() 
 		if valid_city(current_city, user_data):
 			# Игрок сказал подходящий город, удалим его из списка на эту букву.
 			user_data['cities'][current_city[0]].remove(current_city)
-			update.message.reply_text('Такой город есть :)')
 			
 			ch = find_last_char(current_city, user_data)
 			update.message.reply_text('Мне на букву {}'.format(ch))
@@ -113,8 +115,8 @@ def play_game(bot, update, user_data):
 			if city_bot_reply != '404':
 				# Нашли город в ответ. Говорим.
 				update.message.reply_text(city_bot_reply)
-				update.message.reply_text('Вам на букву {}'.format(find_last_char(city_bot_reply, user_data)))
-				
+				user_data['city_char'] = find_last_char(city_bot_reply, user_data)
+				update.message.reply_text('Вам на букву {}'.format(user_data['city_char']))
 				# Удалять не надо, при поиске итак идет pop()
 				# user_data['cities'][city_bot_reply[0]].remove(city_bot_reply)
 			else:
@@ -123,6 +125,8 @@ def play_game(bot, update, user_data):
 
 		else:
 			update.message.reply_text('Такого города нет, ошибка в написании (Ё пишите через Е) или его уже называли')
+	else:
+		update.message.reply_text('Вам на букву {}'.format(user_data['city_char']))
 
 def main():
 	updater = Updater(TOKEN, request_kwargs=PROXY)
