@@ -7,7 +7,7 @@ with open('rus_cities_abc.txt', 'r', encoding='utf-8') as f_input:
 
 with open('ru_cities.txt', 'w', encoding='utf-8') as f_output:
     for t in cities:
-        f_output.write(t)
+        f_output.write(t.upper())
 
 # Generates CSV with letter;city
 #with open('rus_cities.csv', 'w', encoding='utf-8') as f_output:
