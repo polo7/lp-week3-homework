@@ -22,8 +22,9 @@
 
 #### Уровень 1
 * Работа со строками: [string_challenges.py](https://github.com/polo7/lp-week3-homework/blob/master/string_challenges.py)
-* Работа с данными в цикле: [for_challenges.py]()
+* Работа с данными в цикле: [for_challenges.py](https://github.com/polo7/lp-week3-homework/blob/master/for_challenges.py)
 
 #### Уровень 3: телеграм-бот, играющий в города
-* [cities](https://github.com/polo7/lp-week3-homework/tree/master/cities)
+* [cities/bot.py](https://github.com/polo7/lp-week3-homework/tree/master/cities/bot.py)
+Папка cities содержит также дополнительные вспомогательные файлы, которые я использовал для чистки КЛАДР.
 
